@@ -7,11 +7,11 @@ It is designed for a simple idea with massive upside: make authentication invisi
 
 ## 🚀 Live Demo
 
-| Surface | URL |
-| --- | --- |
-| Frontend | `<< [FRONTEND_URL](https://quantum-auth-sdk-web.vercel.app/) >>` |
-| Auth API | `<< [AUTH_API_URL ](https://auth-service-production-b5b5.up.railway.app/)>>` |
-| AI Risk Engine API | `<< [AI_API_URL](https://ai-risk-engine-production.up.railway.app/) >>` |
+| Surface        | URL |
+|---------------|-----|
+| Frontend       | https://quantum-auth-sdk-web.vercel.app/ |
+| Auth API       | https://auth-service-production-b5b5.up.railway.app/ |
+| AI Risk Engine | https://ai-risk-engine-production.up.railway.app/ |
 
 **Demo narrative:** register a user, request a challenge, verify the response, score risk, and mint a session token in one end-to-end flow.
 
