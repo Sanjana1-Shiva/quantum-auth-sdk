@@ -1,9 +1,11 @@
 # QuantumAuth SDK
-> Passwordless identity infrastructure with AI-native risk decisions and a future-ready security roadmap.
+> Passwordless authentication is no longer optional — it’s inevitable.
 
-QuantumAuth SDK is a full-stack hackathon project built like a real security startup: a polished frontend, a developer-friendly TypeScript SDK, a FastAPI auth service, and an independent AI risk engine that scores every login attempt in real time.
+QuantumAuth SDK is a full-stack authentication system that removes passwords entirely and replaces them with cryptographic identity and real-time AI decision-making.
 
-It is designed for a simple idea with massive upside: make authentication invisible for legitimate users, adaptive under pressure, and ready for the next era of security.
+Instead of trusting static credentials, every login is dynamically verified using a challenge-response mechanism and evaluated by an AI risk engine that decides whether to allow, challenge, or deny access.
+
+Built as a developer-first platform, QuantumAuth combines a modern frontend, a TypeScript SDK, a FastAPI-based auth service, and an independent AI microservice — delivering a system that is not only secure today, but designed for the future of identity.
 
 ## 🚀 Live Demo
 
