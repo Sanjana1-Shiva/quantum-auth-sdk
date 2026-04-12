@@ -9,9 +9,9 @@ It is designed for a simple idea with massive upside: make authentication invisi
 
 | Surface | URL |
 | --- | --- |
-| Frontend | `<< FRONTEND_URL >>` |
-| Auth API | `<< AUTH_API_URL >>` |
-| AI Risk Engine API | `<< AI_API_URL >>` |
+| Frontend | `<< [FRONTEND_URL](https://quantum-auth-sdk-web.vercel.app/) >>` |
+| Auth API | `<< [AUTH_API_URL ](https://auth-service-production-b5b5.up.railway.app/)>>` |
+| AI Risk Engine API | `<< [AI_API_URL](https://ai-risk-engine-production.up.railway.app/) >>` |
 
 **Demo narrative:** register a user, request a challenge, verify the response, score risk, and mint a session token in one end-to-end flow.
 
@@ -153,23 +153,6 @@ The SDK abstracts the auth flow into a few clean calls, making it easy for devel
 
 QuantumAuth sits at the intersection of three valuable markets: identity infrastructure, developer tools, and AI-native cybersecurity.
 
-### Why this can become a real company
-
-- **Authentication-as-a-Service:** startups and product teams need modern auth without building it internally.
-- **Adaptive security APIs:** risk-based access decisions are increasingly valuable in fintech, healthtech, SaaS, and enterprise software.
-- **Developer distribution:** an SDK-led product can spread quickly across teams and ecosystems.
-- **Enterprise expansion:** audit logs, policy engines, tenant controls, and compliance features create a clear upgrade path.
-
-### Commercial opportunities
-
-- Usage-based pricing for auth and risk-scoring requests
-- Premium plans for advanced decision policies and analytics
-- White-label or embedded auth infrastructure for platforms
-- Vertical solutions for sectors that require higher trust and lower friction
-
-### Why judges should care
-
-This is not just a feature demo. It is a credible product wedge into the future of digital identity: passwordless on the surface, intelligent underneath, and deployable as a service.
 
 ## 🔭 Future Scope
 
@@ -252,30 +235,9 @@ QuantumAuth matters because it pushes all three goals forward at once:
 
 This project shows how authentication can become a trust layer, not just a login screen.
 
-## 👥 Team
-
-**Team Name:** `<< YOUR_TEAM_NAME >>`
-
-| Member | Role |
-| --- | --- |
-| `<< Member 1 >>` | Product / Full-Stack |
-| `<< Member 2 >>` | Backend / AI |
-| `<< Member 3 >>` | Frontend / SDK |
-
-## 🏆 Hackathon Submission Info
-
-| Field | Details |
-| --- | --- |
-| Project Name | QuantumAuth SDK |
-| Category Fit | AI, Cybersecurity, Developer Tools |
-| Submission Type | Full-stack working prototype |
-| Deployment Model | Vercel for frontend, Railway for backend services |
-| Core Demo Flow | Register -> Challenge -> Verify -> Risk Decision -> Session Token |
-| Differentiator | Passwordless authentication with an AI-native trust layer |
-| Vision | Make modern authentication smarter, simpler, and future-ready |
 
 ## Closing Statement
 
 QuantumAuth SDK is a strong prototype of what next-generation authentication should look like: passwordless for users, intelligent for security teams, and simple for developers to ship.
 
-We are not just building a better login flow. We are building the trust infrastructure for the next wave of software.
+I'm not just building a better login flow. I'm building the trust infrastructure for the next wave of software.
