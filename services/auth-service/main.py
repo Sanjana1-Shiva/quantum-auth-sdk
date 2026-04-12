@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timezone, timedelta
+import os
 import uuid
 import secrets
 import json
@@ -23,6 +24,8 @@ users: dict = {}        # users[userId] = { "userId", "publicKey", "createdAt" }
 public_keys: dict = {}  # public_keys[publicKey] = userId  (for duplicate detection)
 challenges: dict = {}   # challenges[userId] = { "challenge", "expiresAt", "used" }
 sessions: dict = {}     # sessions[token] = { "userId", "expiresAt" }
+
+AI_RISK_ENGINE_URL = os.getenv("AI_RISK_ENGINE_URL", "http://127.0.0.1:8001").rstrip("/")
 
 
 class RegisterRequest(BaseModel):
@@ -106,7 +109,7 @@ def verify(req: VerifyRequest):
     try:
         risk_data = json.dumps({"userId": req.userId}).encode('utf-8')
         risk_req = urllib.request.Request(
-            "http://127.0.0.1:8001/risk",
+            f"{AI_RISK_ENGINE_URL}/risk",
             data=risk_data,
             headers={"Content-Type": "application/json"}
         )

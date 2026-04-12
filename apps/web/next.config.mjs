@@ -1,9 +1,12 @@
 import path from "path";
 
+const monorepoRoot = path.resolve(process.cwd(), "../../");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: monorepoRoot,
   turbopack: {
-    root: path.resolve(process.cwd(), "../../"),
+    root: monorepoRoot,
   },
   allowedDevOrigins: [
     "http://localhost:3000",

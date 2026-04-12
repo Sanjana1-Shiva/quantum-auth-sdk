@@ -7,7 +7,9 @@ import QuantumAuthClient, {
 } from "@quantum-auth/sdk";
 
 const createSignature = (value: string) => value.split("").reverse().join("");
-const AUTH_SERVICE_URL = "http://127.0.0.1:8000";
+const AUTH_SERVICE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  "http://127.0.0.1:8000";
 
 export default function Home() {
   const [publicKey, setPublicKey] = useState("test-key-123");
