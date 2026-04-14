@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { DeveloperIntegration } from "@/components/security/developer-integration";
 import { RiskAnalysis } from "@/components/security/risk-analysis";
 import { SecurityStatus } from "@/components/security/security-status";
 import {
@@ -258,12 +257,6 @@ export default function DashboardPage() {
               attackMode={session.attackMode}
             />
             <RiskAnalysis signals={signals} isReady />
-            <DeveloperIntegration
-              publicKey={session.publicKey}
-              signature={session.signature}
-              riskScore={session.riskScore}
-              sessionToken={session.token}
-            />
           </div>
         </div>
       </div>

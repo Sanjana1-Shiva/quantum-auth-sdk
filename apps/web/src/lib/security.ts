@@ -34,6 +34,7 @@ export interface UserMemoryProfile {
 }
 
 export interface AuthSessionSnapshot {
+  schemaVersion: number;
   userId: string;
   token: string;
   publicKey: string;
@@ -60,6 +61,7 @@ export interface AuthSessionSnapshot {
 export const AUTH_SESSION_STORAGE_KEY = "quantum-auth-session";
 export const REGISTERED_KEYS_STORAGE_KEY = "quantum-auth-registered-keys";
 export const USER_MEMORY_STORAGE_KEY = "quantum-auth-user-memory";
+const AUTH_SESSION_SCHEMA_VERSION = 2;
 
 const LONG_GAP_THRESHOLD_MS = 1000 * 60 * 60 * 12;
 
@@ -529,6 +531,7 @@ export const buildAuthSessionSnapshot = ({
   const previousTrustScore = priorSnapshot?.trustScore ?? null;
 
   return {
+    schemaVersion: AUTH_SESSION_SCHEMA_VERSION,
     userId,
     token,
     publicKey: normalizedPublicKey,
@@ -559,6 +562,7 @@ export const updateAuthSessionRisk = (
   attackMode: boolean
 ): AuthSessionSnapshot => ({
   ...snapshot,
+  schemaVersion: AUTH_SESSION_SCHEMA_VERSION,
   attackMode,
   confidenceBoost: computeConfidenceBoost(snapshot.loginCount),
   riskScore: computeDynamicRisk({
@@ -612,31 +616,30 @@ const normalizeAuthSession = (value: unknown): AuthSessionSnapshot | null => {
   const newDevice = readBoolean(value, "newDevice", false);
   const longGap = readBoolean(value, "longGap", false);
   const attackMode = readBoolean(value, "attackMode", false);
-  const storedRiskScore = readNumber(value, "riskScore", Number.NaN);
-  const riskScore = Number.isFinite(storedRiskScore)
-    ? normalizeRiskScore(storedRiskScore)
-    : computeDynamicRisk({
-        loginCount,
-        newDevice,
-        longGap,
-        attackMode,
-        publicKey,
-        referenceTimestamp: lastAuthenticatedAt,
-      });
-  const trustScore = Math.round(
-    clamp(
-      readNumber(value, "trustScore", computeTrustScore(loginCount, publicKey)),
-      0,
-      100
-    )
+  const schemaVersion = Math.max(
+    0,
+    Math.floor(readNumber(value, "schemaVersion", 0))
   );
-  const previousRiskScore = readNullableNumber(value, "previousRiskScore");
-  const previousTrustScore = readNullableNumber(value, "previousTrustScore");
-  const confidenceBoost = normalizeRiskScore(
-    readNumber(value, "confidenceBoost", computeConfidenceBoost(loginCount))
-  );
+  const isLegacySnapshot = schemaVersion < AUTH_SESSION_SCHEMA_VERSION;
+  const riskScore = computeDynamicRisk({
+    loginCount,
+    newDevice,
+    longGap,
+    attackMode,
+    publicKey,
+    referenceTimestamp: lastAuthenticatedAt,
+  });
+  const trustScore = computeTrustScore(loginCount, publicKey);
+  const previousRiskScore = isLegacySnapshot
+    ? null
+    : readNullableNumber(value, "previousRiskScore");
+  const previousTrustScore = isLegacySnapshot
+    ? null
+    : readNullableNumber(value, "previousTrustScore");
+  const confidenceBoost = computeConfidenceBoost(loginCount);
 
   return {
+    schemaVersion: AUTH_SESSION_SCHEMA_VERSION,
     userId,
     token,
     publicKey,
@@ -649,11 +652,11 @@ const normalizeAuthSession = (value: unknown): AuthSessionSnapshot | null => {
     previousRiskScore,
     previousTrustScore,
     riskDelta:
-      previousRiskScore === null
+      isLegacySnapshot || previousRiskScore === null
         ? roundRisk(readNumber(value, "riskDelta", 0))
         : roundRisk(readNumber(value, "riskDelta", riskScore - previousRiskScore)),
     trustDelta:
-      previousTrustScore === null
+      isLegacySnapshot || previousTrustScore === null
         ? Math.round(readNumber(value, "trustDelta", 0))
         : Math.round(readNumber(value, "trustDelta", trustScore - previousTrustScore)),
     loginCount,

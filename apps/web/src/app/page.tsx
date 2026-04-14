@@ -7,7 +7,6 @@ import QuantumAuthClient, {
   RegistrationError,
 } from "@quantum-auth/sdk";
 import { AttackSimulator } from "@/components/security/attack-simulator";
-import { DeveloperIntegration } from "@/components/security/developer-integration";
 import { RiskAnalysis } from "@/components/security/risk-analysis";
 import { SecurityStatus } from "@/components/security/security-status";
 import {
@@ -861,13 +860,6 @@ export default function Home() {
                 isReady={Boolean(displayedRiskScore !== null && session?.token)}
               />
             </section>
-
-            <DeveloperIntegration
-              publicKey={session?.publicKey || publicKey}
-              signature={signature || session?.signature || ""}
-              riskScore={displayedRiskScore}
-              sessionToken={session?.token}
-            />
 
             <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-800">
               <h3 className="text-xl font-bold mb-4 text-blue-300">
