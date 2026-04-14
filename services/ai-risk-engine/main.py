@@ -2,6 +2,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import hashlib
 import os
 from pydantic import BaseModel
 import random
@@ -19,6 +20,7 @@ app.add_middleware(
 
 class RiskRequest(BaseModel):
     userId: str
+    publicKey: str | None = None
 
 
 recent_attempts: dict[str, list[datetime]] = defaultdict(list)
@@ -38,20 +40,22 @@ def _prune_attempts(timestamps: list[datetime], now: datetime) -> list[datetime]
     return [timestamp for timestamp in timestamps if timestamp >= cutoff]
 
 
-def _demo_safe_score(attempt_count: int) -> float:
-    # Deterministic and demo-friendly: never reaches challenge/deny thresholds.
-    return min(0.12 + max(attempt_count - 1, 0) * 0.06, 0.42)
+def _identity_bucket(identity: str) -> int:
+    digest = hashlib.sha256(identity.encode("utf-8")).digest()
+    return digest[0] % 11
 
 
-def _demo_blocking_score(attempt_count: int) -> float:
-    # Deterministic stepped scoring when blocking is explicitly enabled.
-    if attempt_count == 1:
-        return 0.18
-    if attempt_count == 2:
-        return 0.58
-    if attempt_count == 3:
-        return 0.82
-    return 0.94
+def _demo_safe_score(identity: str, attempt_count: int) -> float:
+    # Deterministic and demo-friendly, but clearly different across identities.
+    base_score = 0.12 + _identity_bucket(identity) * 0.035
+    return min(base_score + max(attempt_count - 1, 0) * 0.06, 0.54)
+
+
+def _demo_blocking_score(identity: str, attempt_count: int) -> float:
+    # Deterministic and escalating: first attempts vary slightly by identity,
+    # repeated attempts climb toward challenge/deny thresholds.
+    base_score = 0.18 + _identity_bucket(identity) * 0.02
+    return min(base_score + max(attempt_count - 1, 0) * 0.28, 0.96)
 
 
 @app.get("/")
@@ -67,11 +71,12 @@ def risk(req: RiskRequest):
     recent_attempts[req.userId] = attempts
 
     attempt_count = len(attempts)
+    identity = req.publicKey or req.userId
 
     if DEMO_MODE and not DEMO_ALLOW_BLOCKING:
-        risk_score = _demo_safe_score(attempt_count)
+        risk_score = _demo_safe_score(identity, attempt_count)
     elif DEMO_MODE and DEMO_ALLOW_BLOCKING:
-        risk_score = _demo_blocking_score(attempt_count)
+        risk_score = _demo_blocking_score(identity, attempt_count)
     else:
         # Non-demo mode keeps lightweight heuristic behavior.
         if attempt_count == 1:

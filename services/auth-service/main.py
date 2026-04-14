@@ -7,7 +7,6 @@ import uuid
 import secrets
 import json
 import urllib.request
-import urllib.parse
 
 app = FastAPI()
 
@@ -107,7 +106,13 @@ def verify(req: VerifyRequest):
 
     # Call AI risk engine
     try:
-        risk_data = json.dumps({"userId": req.userId}).encode('utf-8')
+        user = users[req.userId]
+        risk_data = json.dumps(
+            {
+                "userId": req.userId,
+                "publicKey": user["publicKey"],
+            }
+        ).encode("utf-8")
         risk_req = urllib.request.Request(
             f"{AI_RISK_ENGINE_URL}/risk",
             data=risk_data,
